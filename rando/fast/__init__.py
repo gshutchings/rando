@@ -1,1 +1,1 @@
-from .rando import gauss
+from .rando import gauss, shortshuffle

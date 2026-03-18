@@ -29,6 +29,7 @@ extensions = [
 
 setup(
     name="rando",
+    version="0.1.1",
     packages=["rando", "rando.fast"],
     ext_modules=cythonize(
         extensions,

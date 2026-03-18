@@ -27,13 +27,15 @@ rando.getrandbits() -- 20-30% than random.getrandbits()
 
 rando.seed() -- probably faster but it doesn't matter
 
+rando.shuffle()
+
+rando.below()
+
+rando.randrange()
+
 And a host of other private functions I haven't figured out how to hide yet. 
 
 Yet to be implemented are:
-
-rando.shuffle()
-
-rando.randbelow()
 
 rando.choice(), rando.choices()
 

@@ -5,7 +5,7 @@ from cpython.ref cimport PyObject
 from libc.string cimport memcpy
 from cpython.mem cimport PyMem_Malloc, PyMem_Free
 
-cdef extern from "Python.h":
+cdef extern from "Python.h": # Deprecated in 3.13 for PyLong_AsNativeBytes
     object _PyLong_FromByteArray(
         const unsigned char* buf,
         size_t n,
@@ -21,6 +21,7 @@ cdef extern from "Python.h":
 
 
 #*#**#*#*#*#*#*#*#*#*#*#*#* Important functions #*#**#*#*#*#*#*#*#*#*#*#*#*
+
 def randoLAME():
     cdef:
         double r = _float1()
@@ -73,7 +74,27 @@ def seed(uint64_t s):
     for _ in range(20):
         _next64()
 
+def below(n):
+    n -= 1
+    cdef int size = n.bit_length()
+    cdef object x
+    while True:
+        x = getrandbits(size)
+        if x <= n:
+            return x
+
+def randrange(a, b): # includes both -- random.rangrange()
+    return a + below(b - a + 1)
+
+def shuffle(list x):
+    l = len(x)
+    for i in range(len(x)):
+        i2 = randrange(i, l - 1)
+        x[i], x[i2] = x[i2], x[i]
+
 #*#**#*#*#*#*#*#*#*#*#*#*#* Helper Functions #*#**#*#*#*#*#*#*#*#*#*#*#*
+
+# TODO: put all this into a C file
 
 cdef uint64_t rotl(uint64_t x, int a):
     return (x << a) | (x >> (64 - a))
@@ -95,7 +116,7 @@ cdef double _float12():
 
 cdef double _float1():
     cdef uint64_t bits = _next64()
-    return <double> bits * 5.4210109e-20
+    return <double> bits * 5.42101086242752217003726400434970855712890625e-20 # 2^-64
 
 def rand64():
     return _next64()
@@ -106,8 +127,6 @@ cdef double _gauss(): # box-muller transform
     u2 = sqrt(-2.0 * log(u2)) # unnecessarily reuse variables
     next_gauss = u2 * sin(u1) # store second number
     return u2 * cos(u1)
-
-#*#**#*#*#*#*#*#*#*#*#*#*#* Global Variables #*#**#*#*#*#*#*#*#*#*#*#*#*
 
 cdef test_gauss(uint64_t n):
     cdef double _max = -1e9
@@ -122,6 +141,8 @@ cdef test_gauss(uint64_t n):
 
 def tg(uint64_t n):
     return test_gauss(n)
+
+#*#**#*#*#*#*#*#*#*#*#*#*#* Global Variables #*#**#*#*#*#*#*#*#*#*#*#*#*
 
 cdef double next_gauss = 1e9
 cdef uint64_t state1 = 1
