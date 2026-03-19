@@ -1,1 +1,1 @@
-from .rando import gauss, shortshuffle
+from .rando import gauss, below_32

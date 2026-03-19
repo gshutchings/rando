@@ -14,7 +14,7 @@ extensions = [
         extra_compile_args=["-O3"]
     ),
     Extension(
-        name="rando.fast.rando",
+        name="rando.fast",
         sources=[
             "rando/fast/rando.pyx",
             "math/gauss_sincos.c"

@@ -75,6 +75,8 @@ def seed(uint64_t s):
         _next64()
 
 def below(n):
+    if n < 1:
+        return 0
     n -= 1
     cdef int size = n.bit_length()
     cdef object x
@@ -148,3 +150,5 @@ cdef double next_gauss = 1e9
 cdef uint64_t state1 = 1
 cdef uint64_t state2 = 1
 seed(perf_counter_ns())
+
+del perf_counter_ns # so you can't import them
